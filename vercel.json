@@ -6,7 +6,6 @@
   "installCommand": "pnpm install --no-frozen-lockfile",
   "functions": {
     "api/contact.ts": {
-      "runtime": "nodejs20.x",
       "maxDuration": 15
     }
   },

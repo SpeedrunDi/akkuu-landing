@@ -59,6 +59,24 @@ pnpm preview
 
 Rate-limit хранится в SQLite-файле `private/rate-limit.sqlite`, который создаётся автоматически на один уровень выше корня сайта (не доступен извне).
 
+## Быстрый деплой на Vercel (preview / временный хостинг)
+
+Подойдёт, пока основной Plesk-хостинг недоступен, или для превью заказчику.
+
+1. Зайди на <https://vercel.com/new> и подключи репозиторий `SpeedrunDi/akkuu-landing`.
+2. Vercel сам определит фреймворк (Astro) и подхватит `vercel.json`. Ничего вручную настраивать не нужно.
+3. В **Settings → Environment Variables** добавь минимум:
+   - `TELEGRAM_BOT_TOKEN`
+   - `TELEGRAM_CHAT_ID`
+   - `PUBLIC_CONTACT_ENDPOINT` = `/api/contact` (**без** `.php` — это ключевое отличие от Plesk)
+   - (опц.) `PUBLIC_HCAPTCHA_SITE_KEY` + `HCAPTCHA_SECRET_KEY`
+4. Нажми **Deploy**. Через ~90 секунд получишь URL вида `akkuu-landing-xxx.vercel.app`.
+5. Подключи кастомный домен (если нужно) в **Settings → Domains**.
+
+Форма на Vercel работает через `api/contact.ts` — Node.js serverless-функция, полностью зеркалирующая PHP-версию (та же валидация, honeypot, hCaptcha, Telegram).
+
+⚠️ Rate-limit на Vercel хранится в памяти инстанса (теряется между cold-start'ами). Для продакшена на Vercel лучше подключить Upstash Redis (бесплатный tier). На Plesk рейт-лимит в SQLite работает корректно.
+
 ## Деплой на Plesk-хостинг
 
 ### 1. Подготовь билд локально

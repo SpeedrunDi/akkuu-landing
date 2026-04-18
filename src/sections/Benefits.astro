@@ -1,0 +1,33 @@
+---
+import SectionHeader from '../components/SectionHeader.astro';
+import { BENEFITS } from '../data/content';
+---
+
+<section id="benefits" class="relative bg-cream-100 py-24 lg:py-32">
+  <div class="container-edge">
+    <div class="mb-16 max-w-3xl reveal-group">
+      <SectionHeader
+        eyebrow="Почему мы"
+        title="Четыре причины <span class='underline-accent'>доверять Ак-Куу</span>"
+        description="Мы не обещаем — мы поставляем стабильно каждый день на протяжении шести десятилетий."
+      />
+    </div>
+
+    <div class="reveal-group grid gap-px overflow-hidden rounded-3xl bg-ink-900/10 md:grid-cols-2">
+      {BENEFITS.map((b) => (
+        <article class="group relative bg-cream-50 p-10 lg:p-12 transition-colors duration-500 hover:bg-white stagger-child">
+          <div class="flex items-start gap-6">
+            <div class="font-display text-5xl text-brand-700/30 transition-colors duration-500 group-hover:text-brand-700">{b.number}</div>
+            <div class="flex-1">
+              <h3 class="font-display text-2xl lg:text-3xl text-ink-900">{b.title}</h3>
+              <p class="mt-4 leading-relaxed text-ink-500">{b.description}</p>
+            </div>
+          </div>
+          <div class="mt-8 flex items-center gap-3 text-xs uppercase tracking-[0.18em] text-ink-400">
+            <span class="h-px w-8 bg-ink-300 transition-all duration-500 group-hover:w-16 group-hover:bg-brand-700"></span>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

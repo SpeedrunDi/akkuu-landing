@@ -1,0 +1,138 @@
+---
+import { COMPANY } from '../data/company';
+import Egg3D from '../islands/Egg3D';
+---
+
+<section id="hero" class="relative overflow-hidden bg-cream-100 pt-28 pb-20 lg:pt-32 lg:pb-28">
+  <!-- Background warm gradient + noise -->
+  <div class="absolute inset-0 -z-10">
+    <div
+      class="absolute inset-0"
+      style="background:
+        radial-gradient(1200px 600px at 85% 30%, color-mix(in srgb, var(--color-gold-400) 18%, transparent), transparent 60%),
+        radial-gradient(800px 500px at 10% 110%, color-mix(in srgb, var(--color-brand-700) 14%, transparent), transparent 65%),
+        linear-gradient(180deg, #fbf8f2 0%, #f7f2e8 60%, #efe7d4 100%);"
+    ></div>
+    <div class="noise-overlay"></div>
+  </div>
+
+  <div class="container-edge">
+    <div class="grid items-center gap-12 lg:grid-cols-[1.1fr_1fr] lg:gap-16">
+      <!-- Text column -->
+      <div class="reveal-group relative z-10 max-w-2xl">
+        <span class="eyebrow fade-up">С 1966 года · Кыргызстан</span>
+
+        <h1 class="mt-6 text-hero font-display text-ink-900 fade-up" style="line-height:0.98;">
+          <span class="block">Свежие яйца,</span>
+          <span class="block">которым доверяет</span>
+          <span class="block">
+            <span class="underline-accent">вся страна</span>
+          </span>
+        </h1>
+
+        <p class="mt-8 max-w-xl text-lg leading-relaxed text-ink-500 fade-up">
+          {COMPANY.heroSubtitle}
+        </p>
+
+        <div class="mt-10 flex flex-wrap items-center gap-4 fade-up">
+          <a href="#products" class="btn btn-primary" data-magnet>
+            Наша продукция
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+          <a href="#contact" class="btn btn-ghost" data-magnet>Связаться с нами</a>
+        </div>
+
+        <!-- Trust strip -->
+        <div class="mt-14 grid grid-cols-3 gap-6 border-t border-ink-900/10 pt-8 fade-up">
+          <div>
+            <div class="font-display text-3xl text-ink-900" data-counter data-to="200000" data-suffix="+">0</div>
+            <div class="mt-1 text-xs uppercase tracking-[0.14em] text-ink-500">Яиц в день</div>
+          </div>
+          <div>
+            <div class="font-display text-3xl text-ink-900" data-counter data-to="60" data-suffix="+">0</div>
+            <div class="mt-1 text-xs uppercase tracking-[0.14em] text-ink-500">Лет опыта</div>
+          </div>
+          <div>
+            <div class="font-display text-3xl text-ink-900" data-counter data-to="1000" data-suffix="+">0</div>
+            <div class="mt-1 text-xs uppercase tracking-[0.14em] text-ink-500">Партнёров</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3D egg column -->
+      <div class="relative mx-auto w-full max-w-xl aspect-square fade-up">
+        <div class="absolute inset-[10%] rounded-full bg-gradient-to-br from-gold-300/40 via-cream-200 to-transparent blur-2xl"></div>
+        <div class="absolute inset-0">
+          <Egg3D client:visible />
+        </div>
+
+        <!-- Decorative ring -->
+        <svg class="absolute inset-0 pointer-events-none animate-[spin_60s_linear_infinite]" viewBox="0 0 400 400" aria-hidden="true">
+          <defs>
+            <path id="heroRing" d="M 200,200 m -170,0 a 170,170 0 1,1 340,0 a 170,170 0 1,1 -340,0" />
+          </defs>
+          <text font-family="Inter Variable, sans-serif" font-size="11" letter-spacing="6" fill="#b08a4a">
+            <textPath href="#heroRing">
+              AK-KUU · PREMIUM EGGS · KYRGYZSTAN · SINCE 1966 · AK-KUU · PREMIUM EGGS · KYRGYZSTAN ·
+            </textPath>
+          </text>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll cue -->
+  <div class="absolute bottom-6 left-1/2 -translate-x-1/2 text-xs uppercase tracking-[0.2em] text-ink-400 hidden lg:flex items-center gap-3 animate-[bounce_2.5s_ease-in-out_infinite]">
+    <span class="w-8 h-px bg-ink-400"></span>
+    Пролистайте ниже
+  </div>
+</section>
+
+<!-- Counter animation script -->
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  document.querySelectorAll<HTMLElement>('[data-counter]').forEach((el) => {
+    const target = Number(el.dataset.to ?? '0');
+    const suffix = el.dataset.suffix ?? '';
+
+    const format = (n: number) => {
+      const rounded = Math.round(n);
+      return rounded.toLocaleString('ru-RU').replace(/,/g, ' ') + suffix;
+    };
+
+    if (reduce) {
+      el.textContent = format(target);
+      return;
+    }
+
+    const obj = { v: 0 };
+    gsap.to(obj, {
+      v: target,
+      duration: 2.2,
+      ease: 'power2.out',
+      onUpdate: () => (el.textContent = format(obj.v)),
+      scrollTrigger: { trigger: el, start: 'top 90%', once: true },
+    });
+  });
+
+  // Magnetic buttons
+  const magnetEls = document.querySelectorAll<HTMLElement>('[data-magnet]');
+  magnetEls.forEach((el) => {
+    el.addEventListener('mousemove', (e) => {
+      if (reduce) return;
+      const rect = el.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+      gsap.to(el, { x: x * 0.15, y: y * 0.25, duration: 0.4, ease: 'power3.out' });
+    });
+    el.addEventListener('mouseleave', () => {
+      gsap.to(el, { x: 0, y: 0, duration: 0.6, ease: 'elastic.out(1,0.5)' });
+    });
+  });
+</script>

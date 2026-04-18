@@ -1,0 +1,79 @@
+---
+import { NAV_LINKS } from '../data/content';
+import { COMPANY } from '../data/company';
+import { CONTACTS } from '../data/contacts';
+
+const year = new Date().getFullYear();
+const phones = CONTACTS.filter((c) => c.icon === 'phone').flatMap((c) => c.values);
+const emails = CONTACTS.filter((c) => c.icon === 'mail').flatMap((c) => c.values);
+---
+
+<footer class="relative bg-ink-900 text-cream-100 overflow-hidden">
+  <div class="noise-overlay opacity-[0.04]"></div>
+
+  <div class="container-edge py-20 lg:py-24 relative">
+    <div class="grid gap-12 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
+      <div>
+        <div class="flex items-center gap-3">
+          <img src="/logo.webp" alt="" class="h-12 w-auto invert-0 brightness-[1.15]" width="80" height="56" />
+          <span class="font-display text-2xl">{COMPANY.name}</span>
+        </div>
+        <p class="mt-6 max-w-sm text-sm leading-relaxed text-cream-100/70">
+          {COMPANY.fullName} — свежие яйца №1 в Кыргызстане. {COMPANY.dailyProduction} яиц ежедневно с {COMPANY.foundedYear} года.
+        </p>
+        <div class="mt-8 flex items-center gap-3 text-xs uppercase tracking-[0.2em] text-gold-400">
+          <span class="h-px w-8 bg-gold-500"></span>
+          ISO 22000 · HACCP
+        </div>
+      </div>
+
+      <div>
+        <h3 class="font-display text-lg text-cream-50">Разделы</h3>
+        <ul class="mt-6 space-y-3 text-sm">
+          {NAV_LINKS.map((l) => (
+            <li>
+              <a href={l.href} class="text-cream-100/70 hover:text-gold-400 transition-colors">{l.label}</a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="font-display text-lg text-cream-50">Связь</h3>
+        <ul class="mt-6 space-y-3 text-sm">
+          {phones.map((p) => (
+            <li><a href={p.href} class="text-cream-100/70 hover:text-gold-400 transition-colors">{p.text}</a></li>
+          ))}
+          {emails.slice(0, 2).map((e) => (
+            <li><a href={e.href} class="text-cream-100/70 hover:text-gold-400 transition-colors">{e.text}</a></li>
+          ))}
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="font-display text-lg text-cream-50">Часы работы</h3>
+        <ul class="mt-6 space-y-3 text-sm">
+          {COMPANY.workingHours.map((h) => (
+            <li class="flex items-center justify-between gap-4">
+              <span class="text-cream-100/70">{h.days}</span>
+              <span class="text-cream-50">{h.hours}</span>
+            </li>
+          ))}
+        </ul>
+        <a href="https://go.2gis.com/EvG1A" target="_blank" rel="noopener" class="mt-6 inline-flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-gold-400 hover:text-gold-300 transition-colors">
+          Показать на карте →
+        </a>
+      </div>
+    </div>
+
+    <div class="mt-16 flex flex-col gap-3 border-t border-cream-100/10 pt-6 text-xs uppercase tracking-[0.14em] text-cream-100/50 md:flex-row md:items-center md:justify-between">
+      <span>© {year} {COMPANY.fullName}. Все права защищены.</span>
+      <span>{COMPANY.address}</span>
+    </div>
+  </div>
+
+  <!-- Giant brand wordmark -->
+  <div class="pointer-events-none select-none absolute inset-x-0 -bottom-8 lg:-bottom-12 text-center text-[18vw] font-display leading-none text-cream-50/[0.035]" aria-hidden="true">
+    AK-KUU
+  </div>
+</footer>

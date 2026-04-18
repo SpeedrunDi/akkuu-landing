@@ -1,0 +1,14 @@
+# Env vars — fill via Plesk "Variables of environment" or edit here for this folder.
+# SetEnv TELEGRAM_BOT_TOKEN "paste_token_here"
+# SetEnv TELEGRAM_CHAT_ID "paste_chat_id_here"
+# SetEnv HCAPTCHA_SECRET_KEY "paste_secret_here"
+# SetEnv CONTACT_ALLOW_ORIGIN "https://akkuu.kg"
+
+<Files "contact.php">
+    Require all granted
+</Files>
+
+# Deny access to anything except contact.php
+<FilesMatch "^(?!contact\.php$).*$">
+    Require all denied
+</FilesMatch>

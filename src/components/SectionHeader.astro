@@ -1,0 +1,22 @@
+---
+interface Props {
+  eyebrow?: string;
+  title: string;
+  description?: string;
+  align?: 'left' | 'center';
+  theme?: 'light' | 'dark';
+}
+
+const { eyebrow, title, description, align = 'left', theme = 'light' } = Astro.props;
+const alignClass = align === 'center' ? 'text-center mx-auto' : 'text-left';
+const titleColor = theme === 'dark' ? 'text-cream-50' : 'text-ink-900';
+const descColor = theme === 'dark' ? 'text-cream-200' : 'text-ink-500';
+---
+
+<div class={`max-w-3xl ${alignClass} reveal-group`}>
+  {eyebrow && <span class="eyebrow fade-up">{eyebrow}</span>}
+  <h2 class={`text-display font-display mt-5 fade-up ${titleColor}`} set:html={title} />
+  {description && (
+    <p class={`mt-6 text-lg leading-relaxed fade-up ${descColor}`}>{description}</p>
+  )}
+</div>

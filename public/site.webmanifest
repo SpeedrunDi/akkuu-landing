@@ -1,0 +1,14 @@
+{
+  "name": "Ак-Куу — свежие яйца №1 в Кыргызстане",
+  "short_name": "Ак-Куу",
+  "description": "Крупнейший производитель яиц в Кыргызстане с 1966 года",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7f2e8",
+  "theme_color": "#7a0a0c",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" },
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+  ],
+  "lang": "ru"
+}

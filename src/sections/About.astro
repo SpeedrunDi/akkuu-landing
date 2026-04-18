@@ -1,0 +1,103 @@
+---
+import SectionHeader from '../components/SectionHeader.astro';
+import { COMPANY } from '../data/company';
+---
+
+<section id="about" class="relative py-24 lg:py-32">
+  <div class="container-edge">
+    <div class="grid gap-16 lg:grid-cols-[1fr_1.1fr] lg:gap-20">
+      <!-- Image collage -->
+      <div class="relative fade-up">
+        <div class="relative aspect-[4/5] w-full overflow-hidden rounded-3xl bg-ink-900/5">
+          <!-- REPLACE: real production facility photo -->
+          <img
+            src="/images/about/facility.webp"
+            alt="Производственные мощности Ак-Куу"
+            class="h-full w-full object-cover ken-burns"
+            loading="lazy"
+            width="900"
+            height="1125"
+            onerror="this.src='/images/products/premium.webp'"
+          />
+          <div class="absolute inset-0 bg-gradient-to-t from-ink-900/40 via-transparent to-transparent"></div>
+
+          <div class="absolute bottom-6 left-6 right-6 text-cream-50">
+            <div class="eyebrow !text-gold-400 mb-2">
+              <span class="!bg-gold-400"></span>
+              С 1966 года
+            </div>
+            <div class="font-display text-2xl leading-tight">
+              Шесть десятилетий<br/>безупречной репутации
+            </div>
+          </div>
+        </div>
+
+        <!-- Floating stat card -->
+        <div class="absolute -right-4 -top-8 hidden lg:block w-56 card-surface p-6 shadow-[0_30px_60px_-30px_rgba(28,26,23,0.35)]">
+          <div class="text-xs uppercase tracking-[0.18em] text-ink-500">Ежедневный выпуск</div>
+          <div class="mt-2 font-display text-4xl text-brand-700" data-counter data-to="200000" data-suffix="+">0</div>
+          <div class="mt-1 text-sm text-ink-500">свежих яиц</div>
+        </div>
+
+        <div class="absolute -left-4 -bottom-8 hidden lg:block w-56 card-surface p-6 shadow-[0_30px_60px_-30px_rgba(28,26,23,0.35)]">
+          <div class="text-xs uppercase tracking-[0.18em] text-ink-500">Сертификация</div>
+          <div class="mt-2 font-display text-2xl text-ink-900">ISO 22000<br/>HACCP</div>
+          <div class="mt-1 text-sm text-ink-500">международные стандарты</div>
+        </div>
+      </div>
+
+      <!-- Text column -->
+      <div class="reveal-group flex flex-col justify-center">
+        <SectionHeader
+          eyebrow="О компании"
+          title="Крупнейший производитель яиц <span class='underline-accent'>в Кыргызстане</span>"
+          description={`${COMPANY.fullName} — одна из старейших птицефабрик страны. С ${COMPANY.foundedYear} года мы обеспечиваем свежими качественными яйцами семьи, рестораны и промышленные предприятия по всему Кыргызстану.`}
+        />
+
+        <div class="mt-10 space-y-6 fade-up">
+          <p class="text-ink-700 leading-relaxed">
+            За десятилетия мы построили полный цикл производства: собственный родительский стадо,
+            современный инкубаторий, автоматизированные линии сортировки и упаковки, лаборатория
+            контроля качества и собственная логистика.
+          </p>
+          <p class="text-ink-700 leading-relaxed">
+            Мы работаем по стандартам ISO 22000 и HACCP, а продукция соответствует требованиям
+            технического регламента Таможенного союза. Это гарантия того, что каждое яйцо,
+            попадающее на стол, прошло строгий многоуровневый контроль.
+          </p>
+        </div>
+
+        <div class="mt-10 grid grid-cols-2 gap-6 border-t border-ink-900/10 pt-10 fade-up">
+          <div>
+            <div class="font-display text-4xl text-ink-900" data-counter data-to="60" data-suffix="+">0</div>
+            <div class="mt-2 text-sm text-ink-500">лет на рынке</div>
+          </div>
+          <div>
+            <div class="font-display text-4xl text-ink-900" data-counter data-to="1000" data-suffix="+">0</div>
+            <div class="mt-2 text-sm text-ink-500">партнёров по стране</div>
+          </div>
+        </div>
+
+        <a href="#products" class="mt-10 inline-flex w-fit items-center gap-3 text-sm font-medium uppercase tracking-[0.16em] text-brand-700 fade-up group">
+          Посмотреть продукцию
+          <span class="inline-block transition-transform duration-500 group-hover:translate-x-2">→</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .ken-burns {
+    animation: kenBurns 18s ease-in-out infinite alternate;
+  }
+
+  @keyframes kenBurns {
+    from { transform: scale(1.05) translate(0, 0); }
+    to   { transform: scale(1.15) translate(-2%, -1%); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ken-burns { animation: none; }
+  }
+</style>

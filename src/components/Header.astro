@@ -1,0 +1,106 @@
+---
+import { NAV_LINKS } from '../data/content';
+import { COMPANY } from '../data/company';
+---
+
+<header
+  id="site-header"
+  class="fixed inset-x-0 top-0 z-50 transition-[background,backdrop-filter,border-color] duration-500"
+  data-scroll-header
+>
+  <div class="container-edge flex h-16 lg:h-[72px] items-center justify-between gap-8">
+    <a href="#hero" class="flex items-center gap-3 shrink-0" aria-label={COMPANY.fullName}>
+      <img src="/logo.webp" alt="" class="h-10 w-auto" width="80" height="56" />
+      <span class="hidden sm:flex flex-col leading-tight">
+        <span class="font-display text-lg text-ink-900">{COMPANY.name}</span>
+        <span class="text-[10px] uppercase tracking-[0.22em] text-ink-500">С 1966 · Кыргызстан</span>
+      </span>
+    </a>
+
+    <nav aria-label="Основная навигация" class="hidden lg:block">
+      <ul class="flex items-center gap-8">
+        {NAV_LINKS.map((link) => (
+          <li>
+            <a
+              href={link.href}
+              class="relative text-sm font-medium text-ink-800 transition-colors hover:text-brand-700 after:absolute after:left-0 after:-bottom-1 after:h-px after:w-full after:origin-right after:scale-x-0 after:bg-brand-700 after:transition-transform after:duration-500 hover:after:origin-left hover:after:scale-x-100"
+            >
+              {link.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="flex items-center gap-3">
+      <a href="tel:+996772070749" class="hidden md:inline-flex items-center gap-2 text-sm font-medium text-ink-800 hover:text-brand-700 transition-colors">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        +996 772 070 749
+      </a>
+      <a href="#contact" class="btn btn-primary !py-2.5 !px-5 text-sm hidden sm:inline-flex" data-magnet>Связаться</a>
+      <button
+        id="menu-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        class="lg:hidden inline-flex h-10 w-10 items-center justify-center rounded-full border border-ink-900/20"
+      >
+        <span class="sr-only">Меню</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile panel -->
+  <div id="mobile-menu" class="lg:hidden hidden border-t border-ink-900/10 bg-cream-50/95 backdrop-blur-md">
+    <nav class="container-edge py-6" aria-label="Мобильная навигация">
+      <ul class="flex flex-col gap-5">
+        {NAV_LINKS.map((link) => (
+          <li>
+            <a href={link.href} class="text-xl font-display text-ink-900 hover:text-brand-700" data-mobile-link>{link.label}</a>
+          </li>
+        ))}
+        <li class="pt-2">
+          <a href="tel:+996772070749" class="btn btn-ghost w-full">+996 772 070 749</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const header = document.getElementById('site-header')!;
+  const toggle = document.getElementById('menu-toggle')!;
+  const menu = document.getElementById('mobile-menu')!;
+
+  function applyScrollState() {
+    const scrolled = window.scrollY > 24;
+    if (scrolled) {
+      header.classList.add('is-scrolled');
+    } else {
+      header.classList.remove('is-scrolled');
+    }
+  }
+  applyScrollState();
+  window.addEventListener('scroll', applyScrollState, { passive: true });
+
+  toggle.addEventListener('click', () => {
+    const open = menu.classList.toggle('hidden') === false;
+    toggle.setAttribute('aria-expanded', String(open));
+  });
+
+  menu.querySelectorAll('[data-mobile-link]').forEach((el) => {
+    el.addEventListener('click', () => {
+      menu.classList.add('hidden');
+      toggle.setAttribute('aria-expanded', 'false');
+    });
+  });
+</script>
+
+<style>
+  #site-header.is-scrolled {
+    background: color-mix(in srgb, var(--color-cream-50) 85%, transparent);
+    backdrop-filter: saturate(140%) blur(12px);
+    border-bottom: 1px solid color-mix(in srgb, var(--color-ink-900) 8%, transparent);
+  }
+</style>

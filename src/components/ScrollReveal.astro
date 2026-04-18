@@ -1,0 +1,58 @@
+---
+// Provides scroll-based fade-up reveal via GSAP ScrollTrigger.
+// Any element with class `fade-up` or `stagger-child` inside a `reveal-group` parent animates in.
+---
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function init() {
+    if (prefersReduced) {
+      document.querySelectorAll('.fade-up, .stagger-child').forEach((el) => {
+        (el as HTMLElement).style.opacity = '1';
+        (el as HTMLElement).style.transform = 'none';
+      });
+      return;
+    }
+
+    document.querySelectorAll<HTMLElement>('.reveal-group').forEach((group) => {
+      const items = group.querySelectorAll<HTMLElement>('.fade-up, .stagger-child');
+      if (!items.length) return;
+
+      gsap.to(items, {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        ease: 'power3.out',
+        stagger: 0.08,
+        scrollTrigger: {
+          trigger: group,
+          start: 'top 82%',
+          once: true,
+        },
+      });
+    });
+
+    // standalone elements (outside reveal-group)
+    document.querySelectorAll<HTMLElement>('.fade-up:not(.reveal-group .fade-up)').forEach((el) => {
+      gsap.to(el, {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        ease: 'power3.out',
+        scrollTrigger: { trigger: el, start: 'top 85%', once: true },
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+</script>

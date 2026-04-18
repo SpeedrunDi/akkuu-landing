@@ -1,0 +1,137 @@
+---
+import '../styles/global.css';
+import { COMPANY } from '../data/company';
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+}
+
+const {
+  title = `${COMPANY.fullName} — свежие яйца №1 в Кыргызстане`,
+  description = 'ОАО «Ак-Куу» — крупнейшая птицефабрика Кыргызстана. 200 000+ свежих яиц ежедневно с 1966 года. ISO 22000, HACCP, доставка по всей стране.',
+  ogImage = '/og-image.jpg',
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://akkuu.kg').toString();
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: COMPANY.fullName,
+  alternateName: COMPANY.name,
+  url: COMPANY.website,
+  logo: `${COMPANY.website}/logo.webp`,
+  foundingDate: String(COMPANY.foundedYear),
+  description,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'ул. Краснодарская, 60',
+    addressLocality: 'с. Сокулук',
+    addressRegion: 'Чуйская область',
+    addressCountry: 'KG',
+  },
+  contactPoint: [
+    {
+      '@type': 'ContactPoint',
+      telephone: '+996-772-070-749',
+      contactType: 'sales',
+      areaServed: 'KG',
+      availableLanguage: ['ru', 'ky'],
+    },
+    {
+      '@type': 'ContactPoint',
+      telephone: '+996-770-031-966',
+      contactType: 'customer service',
+      areaServed: 'KG',
+    },
+  ],
+  sameAs: [],
+};
+---
+
+<!doctype html>
+<html lang="ru" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <meta name="theme-color" content="#f7f2e8" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#1c1a17" media="(prefers-color-scheme: dark)" />
+    <meta name="color-scheme" content="light" />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(ogImage, Astro.site ?? 'https://akkuu.kg').toString()} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content={COMPANY.fullName} />
+    <meta property="og:locale" content="ru_RU" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL(ogImage, Astro.site ?? 'https://akkuu.kg').toString()} />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <link rel="preload" as="image" href="/logo.webp" />
+
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+    <slot name="head" />
+  </head>
+  <body>
+    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:bg-ink-900 focus:text-cream-50 focus:px-4 focus:py-2 focus:rounded-full">
+      Перейти к контенту
+    </a>
+
+    <slot />
+
+    <script>
+      import Lenis from 'lenis';
+      import 'lenis/dist/lenis.css';
+
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (!prefersReduced) {
+        const lenis = new Lenis({
+          duration: 1.15,
+          easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+          smoothWheel: true,
+          syncTouch: false,
+        });
+
+        function raf(time: number) {
+          lenis.raf(time);
+          requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+
+        document.querySelectorAll('a[href^="#"]').forEach((link) => {
+          link.addEventListener('click', (e) => {
+            const href = (link as HTMLAnchorElement).getAttribute('href');
+            if (!href || href === '#') return;
+            const target = document.querySelector(href);
+            if (target) {
+              e.preventDefault();
+              lenis.scrollTo(target as HTMLElement, { offset: -72, duration: 1.4 });
+              history.replaceState(null, '', href);
+            }
+          });
+        });
+
+        (window as any).__lenis = lenis;
+      }
+    </script>
+  </body>
+</html>

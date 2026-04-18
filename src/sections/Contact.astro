@@ -1,0 +1,65 @@
+---
+import SectionHeader from '../components/SectionHeader.astro';
+import ContactIcon from '../components/ContactIcon.astro';
+import ContactForm from '../islands/ContactForm';
+import { CONTACTS } from '../data/contacts';
+import { COMPANY } from '../data/company';
+---
+
+<section id="contact" class="relative bg-cream-100 py-24 lg:py-32">
+  <div class="container-edge">
+    <div class="grid gap-16 lg:grid-cols-[1fr_1.2fr] lg:gap-24">
+      <!-- Contact info -->
+      <div class="reveal-group">
+        <SectionHeader
+          eyebrow="Контакты"
+          title="Свяжитесь с нами <span class='underline-accent'>напрямую</span>"
+          description="Коммерческие запросы, партнёрство, крупные поставки — ответим в течение рабочего дня."
+        />
+
+        <div class="mt-12 space-y-5">
+          {CONTACTS.map((c) => (
+            <div class="group flex items-start gap-5 fade-up">
+              <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-50 text-brand-700 ring-1 ring-brand-700/10 transition-all duration-500 group-hover:bg-brand-700 group-hover:text-cream-50 group-hover:ring-brand-700">
+                <ContactIcon name={c.icon} />
+              </div>
+              <div class="min-w-0 flex-1">
+                <div class="text-xs uppercase tracking-[0.16em] text-ink-500">{c.label}</div>
+                <div class="mt-1 space-y-1">
+                  {c.values.map((v) => (
+                    <a href={v.href} class="block text-base font-medium text-ink-900 hover:text-brand-700 transition-colors break-words">
+                      {v.text}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div class="mt-10 rounded-3xl border border-ink-900/10 bg-cream-50 p-6 fade-up">
+          <div class="text-xs uppercase tracking-[0.18em] text-ink-500">Часы работы</div>
+          <div class="mt-4 space-y-2">
+            {COMPANY.workingHours.map((h) => (
+              <div class="flex items-center justify-between text-sm">
+                <span class="text-ink-500">{h.days}</span>
+                <span class="font-medium text-ink-900">{h.hours}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <!-- Form -->
+      <div class="fade-up">
+        <div class="rounded-[2rem] border border-ink-900/10 bg-cream-50 p-8 lg:p-12 shadow-[0_40px_80px_-50px_rgba(28,26,23,0.4)]">
+          <div class="mb-8 flex items-center gap-3 text-xs uppercase tracking-[0.2em] text-brand-700">
+            <span class="h-px w-8 bg-brand-700"></span>
+            Написать нам
+          </div>
+          <ContactForm client:visible />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -7,6 +7,8 @@ export default function ProductsCarousel() {
   const [direction, setDirection] = useState<1 | -1>(1);
   const autoRef = useRef<number | null>(null);
   const hoverRef = useRef(false);
+  const inViewportRef = useRef(true);
+  const rootRef = useRef<HTMLDivElement | null>(null);
 
   const goTo = useCallback((index: number, dir: 1 | -1 = 1) => {
     const normalized = (index + PRODUCTS.length) % PRODUCTS.length;
@@ -17,13 +19,15 @@ export default function ProductsCarousel() {
   const next = useCallback(() => goTo(active + 1, 1), [active, goTo]);
   const prev = useCallback(() => goTo(active - 1, -1), [active, goTo]);
 
-  // Auto advance, paused on hover
+  // Auto advance — paused on hover, when tab is hidden, or when section is off-screen.
+  // Saves CPU/battery and avoids useless re-renders users can't see.
   useEffect(() => {
     const id = window.setInterval(() => {
-      if (!hoverRef.current) {
-        setDirection(1);
-        setActive((a) => (a + 1) % PRODUCTS.length);
-      }
+      if (hoverRef.current) return;
+      if (document.hidden) return;
+      if (!inViewportRef.current) return;
+      setDirection(1);
+      setActive((a) => (a + 1) % PRODUCTS.length);
     }, 6500);
     autoRef.current = id;
     return () => {
@@ -31,8 +35,24 @@ export default function ProductsCarousel() {
     };
   }, []);
 
+  // Track viewport visibility to pause auto-advance when section is off-screen.
+  useEffect(() => {
+    if (!rootRef.current) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        inViewportRef.current = entry.isIntersecting;
+      },
+      { threshold: 0.15 },
+    );
+    obs.observe(rootRef.current);
+    return () => obs.disconnect();
+  }, []);
+
+  // Keyboard nav — but only when carousel is in viewport, otherwise arrow keys
+  // would hijack page scrolling.
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
+      if (!inViewportRef.current) return;
       if (e.key === 'ArrowRight') next();
       if (e.key === 'ArrowLeft') prev();
     };
@@ -53,6 +73,7 @@ export default function ProductsCarousel() {
 
   return (
     <div
+      ref={rootRef}
       className="relative"
       onMouseEnter={() => (hoverRef.current = true)}
       onMouseLeave={() => (hoverRef.current = false)}

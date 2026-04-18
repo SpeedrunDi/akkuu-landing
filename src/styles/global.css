@@ -79,6 +79,31 @@
     height: auto;
   }
 
+  /* Keyboard-only focus rings (WCAG 2.4.7). Mouse clicks don't trigger them. */
+  :focus-visible {
+    outline: 2px solid var(--color-brand-700);
+    outline-offset: 3px;
+    border-radius: 4px;
+    transition: outline-offset 0.15s ease;
+  }
+
+  .btn:focus-visible,
+  button:focus-visible {
+    outline-offset: 4px;
+  }
+
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    outline-offset: 2px;
+  }
+
+  /* On dark backgrounds (footer, quality section) flip focus ring to gold */
+  #quality :focus-visible,
+  footer :focus-visible {
+    outline-color: var(--color-gold-400);
+  }
+
   html.lenis, html.lenis body {
     height: auto;
   }
@@ -211,6 +236,16 @@
   .text-hero { font-size: var(--text-hero); }
   .text-display { font-size: var(--text-display); }
   .text-section { font-size: var(--text-section); }
+
+  /*
+   * Defer rendering of below-fold sections until they near the viewport.
+   * Gives first paint +15-25% on long pages. `contain-intrinsic-size` is the
+   * placeholder height so scrollbar doesn't jitter when sections come in.
+   */
+  .cv-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: 1px 800px;
+  }
 
   .noise-overlay {
     position: absolute;

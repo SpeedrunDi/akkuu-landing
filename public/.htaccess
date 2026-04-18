@@ -1,0 +1,104 @@
+# ===== Ак-Куу · Apache / Plesk config =====
+# Этот файл активен только на Plesk/Apache хостинге. Vercel и другие
+# статические хостинги его игнорируют.
+
+# --- Security headers ---
+<IfModule mod_headers.c>
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-Content-Type-Options "nosniff"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+    Header set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+    Header set Strict-Transport-Security "max-age=63072000; includeSubDomains; preload" env=HTTPS
+
+    # Отключаем устаревший X-XSS-Protection (OWASP больше не рекомендует)
+    Header unset X-XSS-Protection
+
+    # Базовый CSP. Если подключите Google Analytics / Метрику — добавьте
+    # их домены в script-src, style-src, connect-src соответственно.
+    Header set Content-Security-Policy "default-src 'self'; \
+        script-src 'self' 'unsafe-inline' https://hcaptcha.com https://*.hcaptcha.com; \
+        style-src 'self' 'unsafe-inline' https://hcaptcha.com https://*.hcaptcha.com; \
+        img-src 'self' data: blob:; \
+        font-src 'self' data:; \
+        connect-src 'self' https://hcaptcha.com https://*.hcaptcha.com; \
+        frame-src https://hcaptcha.com https://*.hcaptcha.com; \
+        object-src 'none'; base-uri 'self'; form-action 'self'; \
+        frame-ancestors 'self'; upgrade-insecure-requests"
+
+    # Убираем заголовки, выдающие стек сервера
+    Header unset X-Powered-By
+    Header always unset Server
+</IfModule>
+
+# --- Compression ---
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript
+    AddOutputFilterByType DEFLATE application/javascript application/json application/xml
+    AddOutputFilterByType DEFLATE image/svg+xml font/ttf font/otf
+</IfModule>
+
+<IfModule mod_brotli.c>
+    AddOutputFilterByType BROTLI_COMPRESS text/html text/css text/javascript
+    AddOutputFilterByType BROTLI_COMPRESS application/javascript application/json image/svg+xml
+</IfModule>
+
+# --- Cache-Control ---
+<IfModule mod_expires.c>
+    ExpiresActive On
+
+    # Хэшированные ассеты (/assets/xxx.HASH.js) — кэш на год
+    <FilesMatch "\.(js|css|woff2|woff|ttf|otf)$">
+        ExpiresDefault "access plus 1 year"
+        Header set Cache-Control "public, max-age=31536000, immutable"
+    </FilesMatch>
+
+    # Изображения
+    <FilesMatch "\.(webp|avif|png|jpg|jpeg|gif|svg|ico)$">
+        ExpiresDefault "access plus 30 days"
+        Header set Cache-Control "public, max-age=2592000"
+    </FilesMatch>
+
+    # HTML — никакого кэша браузера (Plesk/nginx CDN могут своё добавить)
+    <FilesMatch "\.(html|xml|json|webmanifest|txt)$">
+        ExpiresDefault "access plus 0 seconds"
+        Header set Cache-Control "no-cache, must-revalidate"
+    </FilesMatch>
+</IfModule>
+
+# --- Correct MIME types ---
+<IfModule mod_mime.c>
+    AddType image/webp .webp
+    AddType image/avif .avif
+    AddType application/manifest+json .webmanifest
+    AddType font/woff2 .woff2
+    AddType image/svg+xml .svg
+</IfModule>
+
+# --- Redirects: force HTTPS (дублирует Plesk-настройку, страховка) ---
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{HTTPS} !=on
+    RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+    RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
+
+    # Убираем trailing slash на non-directory путях
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.+)/$ /$1 [R=301,L]
+</IfModule>
+
+# --- Block access to private/sensitive files ---
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
+
+<FilesMatch "\.(env|env\..+|log|sqlite|sqlite3|bak|swp|sql|yaml|yml|lock|md)$">
+    Require all denied
+</FilesMatch>
+
+<IfModule mod_rewrite.c>
+    # Блокируем доступ к каталогу private/ (SQLite с rate-limit и пр.)
+    RewriteRule ^private(/.*)?$ - [R=404,L]
+</IfModule>
+
+# --- Custom 404 ---
+ErrorDocument 404 /index.html

@@ -1,3 +1,5 @@
+const FOUNDED_YEAR = 1966;
+
 export const COMPANY = {
   name: 'Ак-Куу',
   fullName: 'ОАО «Ак-Куу»',
@@ -5,8 +7,8 @@ export const COMPANY = {
   heroTitle: 'Свежие яйца, которым доверяет вся страна',
   heroSubtitle:
     'С 1966 года мы поставляем свежие, отборные яйца в каждый уголок Кыргызстана — с непревзойдённым качеством и надёжностью.',
-  foundedYear: 1966,
-  experienceYears: 60,
+  foundedYear: FOUNDED_YEAR,
+  experienceYears: new Date().getFullYear() - FOUNDED_YEAR,
   dailyProduction: '200 000+',
   customers: '1 000+',
   website: 'https://akkuu.kg',
